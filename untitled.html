@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Livro de Visitas</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fce4ec;
+      text-align: center;
+      padding: 30px;
+    }
+
+    h1 {
+      color: #e91e63;
+    }
+
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+      margin: 10px;
+    }
+
+    .visitante {
+      margin-top: 30px;
+      font-size: 24px;
+      color: #880e4f;
+    }
+
+    .gif img {
+      width: 300px;
+      margin-top: 20px;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 30px;
+    }
+
+    li {
+      background: #fff0f5;
+      margin: 10px auto;
+      padding: 10px;
+      max-width: 400px;
+      border-radius: 10px;
+      border: 1px solid #f48fb1;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Bem-vindo ao nosso Livro de Visitas!</h1>
+  <p>Digite seu nome abaixo:</p>
+  <input type="text" id="nomeVisitante" placeholder="Seu nome">
+  <button onclick="registrarVisita()">Registrar Visita</button>
+
+  <div class="visitante" id="mensagemBoasVindas"></div>
+  <div class="gif" id="gifBoasVindas"></div>
+
+  <h2>Visitantes:</h2>
+  <ul id="listaVisitantes"></ul>
+
+  <script>
+    // Carregar visitas salvas
+    function carregarVisitas() {
+      const lista = document.getElementById('listaVisitantes');
+      const visitasSalvas = JSON.parse(localStorage.getItem('visitas')) || [];
+
+      visitasSalvas.forEach(visita => {
+        const item = document.createElement('li');
+        item.textContent = `${visita.nome} visitou às ${visita.hora}`;
+        lista.appendChild(item);
+      });
+    }
+
+    function registrarVisita() {
+      const nome = document.getElementById('nomeVisitante').value.trim();
+      const mensagem = document.getElementById('mensagemBoasVindas');
+      const gif = document.getElementById('gifBoasVindas');
+      const lista = document.getElementById('listaVisitantes');
+
+      if (nome !== "") {
+        const hora = new Date().toLocaleTimeString();
+        const visita = { nome, hora };
+
+        // Mostrar mensagem e GIF
+        mensagem.innerHTML = `Olá, <strong>${nome}</strong>! Obrigado por visitar!`;
+        gif.innerHTML = `<img src="https://media.giphy.com/media/3oKIPvvaugnP88ZGEU/giphy.gif" alt="Bem-vindo">`;
+
+        // Criar item e exibir no topo da lista
+        const item = document.createElement('li');
+        item.textContent = `${nome} visitou às ${hora}`;
+        lista.prepend(item);
+
+        // Salvar no localStorage
+        const visitas = JSON.parse(localStorage.getItem('visitas')) || [];
+        visitas.unshift(visita); // adicionar no início
+        localStorage.setItem('visitas', JSON.stringify(visitas));
+
+        document.getElementById('nomeVisitante').value = "";
+      } else {
+        mensagem.innerHTML = "Por favor, digite seu nome.";
+        gif.innerHTML = "";
+      }
+    }
+
+    // Carrega visitas ao abrir a página
+    window.onload = carregarVisitas;
+  </script>
+
+</body>
+</html>
